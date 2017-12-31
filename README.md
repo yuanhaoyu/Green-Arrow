@@ -1,7 +1,7 @@
 # Green-Arrow
 ---
 
-<img src="./logo.png" style="width: 100px">
+<img src="./logo.png"  width="120">
 
 Green Arrow 是一款集打点，监控为一体的系统。
 
