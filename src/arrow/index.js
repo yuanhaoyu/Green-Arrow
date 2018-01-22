@@ -1,46 +1,69 @@
+import tools from '../common/tool';
+
 class Arrow {
-    constructor (url) {
-        this.url = url;
+    constructor (config) {
+        this.base = {
+            "src": config.src,
+            "pid": config.pid,
+            "channel": config.channel,
+            "sc": '',
+            "ua": '',
+            "startTime": '',
+            "endTime": ''
+        }
+        this.url = config.url;
+        this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET';
+        this.version = '0.0.0';
+        this._init();
     }
-    sendMsg (msg) {
-        let img = new Image();
-        img.src = this.url + '?' + encodeURI(JSON.stringify(msg));
+    _init () {
+        // 初始化配置
+        this.base.sc = tools.getSC();
+        this.base.src = tools.getUrl();
+        this.ua = tools.getUA();
+    }
+    sendMsg (msg = {}) {
+        if (this.type === 'GET') {
+            let img = new Image();
+            let query = Object.assign({}, {"base": this.base ,"val": msg, "now": tools.getNow()})
+            img.src = this.url + '?data=' + encodeURIComponent(JSON.stringify(query));                      
+        } else {
+            // todo: use post ajax
+        }
     }
 }
 
 class Action_Arrow extends Arrow{
+    auto () {
+        // todo: add watcher
+    }
     ok (msg) {
         this.sendMsg(msg);
     }
 }
 
-class Light_Arrow extends Arrow{
-
-}
-
 class Star_Arrow extends Arrow{
-    come (msg) {
-        this.sendMsg(msg);
+    constructor (config) {
+        super(config);
+        this._start();
+        this._end();
     }
-    // 当前默认只支持a标签的跳转
-    leave (msg) {
-        let domLists = document.getElementsByTagName('a');
-        for (let i = 0 ;i < domLists.length; i++) {
-            // 截取a的默认跳转
-            let that = this;
-            domLists[i].onclick = function (e) {
-                // todo: 兼容考虑
-                e.preventDefault(); 
-                that.sendMsg(msg);
-                window.location.href = domLists[i].href;
-            }
-        }
+    _start () {
+        this.base.startTime = tools.getNow();
+        this.sendMsg({"action": "in"});
+    }
+    _end () {
+        let that = this;
+        (function(win, t) {
+            win.onbeforeunload = function(e){
+                t.base.startTime = tools.getNow();
+                t.sendMsg({"action": "out"});
+            };
+        })(window, that)
     }
 }
-
 
 export {
     Action_Arrow,
-    Light_Arrow,
     Star_Arrow
 }

@@ -71,48 +71,100 @@ require = (function (modules, cache, entry) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-class Arrow {
-  constructor(url) {
-    this.url = url;
+exports.default = {
+  getUA() {
+    return navigator.userAgent;
+  },
+  getNow() {
+    return Date.parse(new Date());
+  },
+  getUrl() {
+    return window.location.href;
+  },
+  getSC() {
+    return document.documentElement.clientHeight + '*' + document.documentElement.clientWidth;
   }
-  sendMsg(msg) {
-    let img = new Image();
-    img.src = this.url + '?' + encodeURI(JSON.stringify(msg));
+};
+},{}],2:[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Star_Arrow = exports.Action_Arrow = undefined;
+
+var _tool = require("../common/tool");
+
+var _tool2 = _interopRequireDefault(_tool);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class Arrow {
+  constructor(config) {
+    this.base = {
+      "src": config.src,
+      "pid": config.pid,
+      "channel": config.channel,
+      "sc": '',
+      "ua": '',
+      "startTime": '',
+      "endTime": ''
+    };
+    this.url = config.url;
+    this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET';
+    this.version = '0.0.0';
+    this._init();
+  }
+  _init() {
+    // 初始化配置
+    this.base.sc = _tool2.default.getSC();
+    this.base.src = _tool2.default.getUrl();
+    this.ua = _tool2.default.getUA();
+  }
+  sendMsg(msg = {}) {
+    if (this.type === 'GET') {
+      let img = new Image();
+      let query = Object.assign({}, { "base": this.base, "val": msg, "now": _tool2.default.getNow() });
+      img.src = this.url + '?data=' + encodeURIComponent(JSON.stringify(query));
+    } else {
+      // todo: use post ajax
+    }
   }
 }
 
 class Action_Arrow extends Arrow {
+  auto() {
+    // todo: add watcher
+  }
   ok(msg) {
     this.sendMsg(msg);
   }
 }
 
-class Light_Arrow extends Arrow {}
-
 class Star_Arrow extends Arrow {
-  come(msg) {
-    this.sendMsg(msg);
+  constructor(config) {
+    super(config);
+    this._start();
+    this._end();
   }
-  // 当前默认只支持a标签的跳转
-  leave(msg) {
-    let domLists = document.getElementsByTagName('a');
-    for (let i = 0; i < domLists.length; i++) {
-      // 截取a的默认跳转
-      let that = this;
-      domLists[i].onclick = function (e) {
-        // todo: 兼容考虑
-        e.preventDefault();
-        that.sendMsg(msg);
-        window.location.href = domLists[i].href;
+  _start() {
+    this.base.startTime = _tool2.default.getNow();
+    this.sendMsg({ "action": "in" });
+  }
+  _end() {
+    let that = this;
+    (function (win, t) {
+      win.onbeforeunload = function (e) {
+        t.base.startTime = _tool2.default.getNow();
+        t.sendMsg({ "action": "out" });
       };
-    }
+    })(window, that);
   }
 }
 
 exports.Action_Arrow = Action_Arrow;
-exports.Light_Arrow = Light_Arrow;
 exports.Star_Arrow = Star_Arrow;
-},{}],1:[function(require,module,exports) {
+},{"../common/tool":3}],1:[function(require,module,exports) {
 "use strict";
 
 var _arrow = require("./src/arrow");
@@ -124,9 +176,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 const aw = {
   init(config) {
     if (config.type === 'aciton-arrow') {
-      return new arrow.Action_Arrow(config.url);
+      return new arrow.Action_Arrow(config.config);
     } else if (config.type === 'star-arrow') {
-      return new arrow.Star_Arrow(config.url);
+      return new arrow.Star_Arrow(config.config);
     }
   }
 };
@@ -138,7 +190,7 @@ window.AW = aw;
 // } else {
 //     console.error('window.AW is has!')
 // }
-},{"./src/arrow":3}],0:[function(require,module,exports) {
+},{"./src/arrow":2}],0:[function(require,module,exports) {
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
 function Module() {
@@ -156,7 +208,7 @@ function Module() {
 module.bundle.Module = Module;
 
 if (!module.bundle.parent) {
-  var ws = new WebSocket('ws://localhost:53069/');
+  var ws = new WebSocket('ws://localhost:63642/');
   ws.onmessage = function(event) {
     var data = JSON.parse(event.data);
 
