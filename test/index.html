@@ -6,15 +6,46 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="../dist/index.js"></script>
+    <style>
+    .tt {
+        width: 200px;
+        height: 200px;
+        background: red;
+    }
+    .tt2 {
+        width: 200px;
+        height: 200px;
+        background: rebeccapurple;
+    }
+    .tt3 {
+        width: 200px;
+        height: 200px;
+        background: red;
+    }
+    .tt4 {
+        width: 200px;
+        height: 200px;
+        background: rebeccapurple;        
+    }
+    </style>
 </head>
 <body>
     <a href="//www.baidu.com">1</a>
     <a href="#">2</a>
+    <div action-arrow="{'mid': 12312}" onClick="test()">12312312</div>
+    <div class="tt"></div>
+    <div class="tt2"></div>
+    <div class="tt3" star-arrow='{"mid": "tt3"}'></div>
+    <div class="tt4" star-arrow='{"mid": "tt4"}'></div>
 </body>
 <script>
-    // let aaw = AW.init({type: 'aciton-arrow', url: '//www.baidu.com'});
-    let saw = AW.init({type: 'star-arrow', config: {url: '//www.baidu.com'}})
+    let aaw = AW.init({type: 'aciton-arrow', config: {url: '//www.baidu.com'}});
+    let saw = AW.init({type: 'star-arrow', config: {url: '//www.baidu.com'}});
+    aaw.watcher();
+    saw.watcher();
     // aaw.ok('test----123131')
-
+    function test() {
+        alert('test')
+    }
 </script>
 </html>

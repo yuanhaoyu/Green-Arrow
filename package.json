@@ -1,0 +1,25 @@
+{
+  "name": "green-arrow",
+  "version": "0.0.0",
+  "description": "---",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuanhaoyu/Green-Arrow.git"
+  },
+  "author": "Houn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuanhaoyu/Green-Arrow/issues"
+  },
+  "homepage": "https://github.com/yuanhaoyu/Green-Arrow#readme",
+  "dependencies": {
+    "intersection-observer": "^0.5.0"
+  }
+}

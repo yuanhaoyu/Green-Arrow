@@ -1,4 +1,5 @@
 import tools from '../common/tool';
+require('intersection-observer');
 
 class Arrow {
     constructor (config) {
@@ -20,9 +21,9 @@ class Arrow {
         // 初始化配置
         this.base.sc = tools.getSC();
         this.base.src = tools.getUrl();
-        this.ua = tools.getUA();
+        this.base.ua = tools.getUA();
     }
-    sendMsg (msg = {}) {
+    _sendMsg (msg = {}) {
         if (this.type === 'GET') {
             let img = new Image();
             let query = Object.assign({}, {"base": this.base ,"val": msg, "now": tools.getNow()})
@@ -34,11 +35,23 @@ class Arrow {
 }
 
 class Action_Arrow extends Arrow{
-    auto () {
-        // todo: add watcher
+    constructor (config) {
+        super(config);
     }
-    ok (msg) {
-        this.sendMsg(msg);
+    watcher () {
+        // todo: 去重
+        setTimeout(() => {           
+            let doms = document.querySelectorAll('[action-arrow]');
+            for (let i = 0; i < doms.length; i++) {
+                doms[i].addEventListener('click', () => {
+                    this.action(doms[i].getAttribute('action-arrow'));
+                }, false)
+            }
+        }, 0)
+    }
+    action (msg) {
+        let temp = Object.assign({}, {"type": "action"}, JSON.parse(msg));
+        this._sendMsg(temp);
     }
 }
 
@@ -50,16 +63,42 @@ class Star_Arrow extends Arrow{
     }
     _start () {
         this.base.startTime = tools.getNow();
-        this.sendMsg({"action": "in"});
+        this._sendMsg({"action": "in"});
     }
     _end () {
         let that = this;
         (function(win, t) {
             win.onbeforeunload = function(e){
                 t.base.startTime = tools.getNow();
-                t.sendMsg({"action": "out"});
+                t._sendMsg({"action": "out"});
             };
-        })(window, that)
+        })(window, that);
+    }
+
+    watcher () {
+        // todo: add watcher
+        const io = new IntersectionObserver(
+            entries => {
+              for (let i =0; i < entries.length; i++) {
+                  if (entries[i].isIntersecting) {
+                      let msg = entries[i].target.getAttribute('star-arrow');
+                      this.star(msg);
+                      io.unobserve(entries[i].target);
+                  }
+              }
+            }
+        );
+        setTimeout(() => {
+            let doms = document.querySelectorAll('[star-arrow]');
+            for (let i = 0; i < doms.length; i++) {
+                io.observe(doms[i]);
+            }
+        }, 0)
+    }
+    star (msg) {
+        let temp = Object.assign({}, {"type": "star"}, JSON.parse(msg));
+        console.log(temp);      
+        this._sendMsg(temp);        
     }
 }
 
