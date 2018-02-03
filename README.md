@@ -38,7 +38,7 @@ star-arrow 为星箭，可以追踪页面元素的曝光情况
 
 ## Quick Start
 
-😁首先是老生常谈的初始化。
+😁首先是老生常谈的初始化，在**/dist/green-arrow.js**你可以获取到green-arrow。
 
 你可以通过引入script标签的方式加载green-arrow，当时也可以通过npm，然后用es6的import引入。
 

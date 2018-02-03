@@ -1,5 +1,5 @@
-import * as arrows from './src/arrow';
-import * as tools from './src/common/tool'
+import * as arrows from './arrow';
+import * as tools from './common/tool'
 
 const aw = {
     config: {},
