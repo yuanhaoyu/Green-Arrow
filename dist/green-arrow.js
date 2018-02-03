@@ -65,7 +65,7 @@ require = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({5:[function(require,module,exports) {
+})({6:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -83,6 +83,13 @@ exports.default = {
   },
   getSC() {
     return document.documentElement.clientHeight + '*' + document.documentElement.clientWidth;
+  },
+  juageEmptyObject(object) {
+    let flag = true;
+    for (let i in object) {
+      flag = false;
+    }
+    return flag;
   }
 };
 },{}],7:[function(require,module,exports) {
@@ -811,13 +818,13 @@ window.IntersectionObserverEntry = IntersectionObserverEntry;
 
 }(window, document));
 
-},{}],3:[function(require,module,exports) {
+},{}],5:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Star_Arrow = exports.Action_Arrow = undefined;
+exports.Star_Arrow = exports.Action_Arrow = exports.Arrow = undefined;
 
 var _tool = require("../common/tool");
 
@@ -828,19 +835,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 require('intersection-observer');
 
 class Arrow {
-  constructor(config) {
+  constructor(config = {}) {
     this.base = {
-      "src": config.src,
-      "pid": config.pid,
-      "channel": config.channel,
-      "sc": '',
-      "ua": '',
-      "startTime": '',
-      "endTime": ''
+      "appnm": config.appnm, // 处于哪个环境
+      "pid": config.pid, // 页面id
+      "channel": config.channel, // 上报渠道
+      "sc": '', // 屏幕大小
+      "ua": '', // 访问环境ua
+      "src": '', // 当前url   
+      "startTime": '', // 页面开始时间
+      "endTime": '' // 页面结束时间
     };
-    this.url = config.url;
-    this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET';
-    this.version = '0.0.0';
+    this.ex = config.ex;
+    this.url = config.url; // 打点信息将发往的url
+    this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET'; // 发送的方法
+    this.version = '0.0.0'; // 当前green-arrow的版本号
     this._init();
   }
   _init() {
@@ -852,11 +861,14 @@ class Arrow {
   _sendMsg(msg = {}) {
     if (this.type === 'GET') {
       let img = new Image();
-      let query = Object.assign({}, { "base": this.base, "val": msg, "now": _tool2.default.getNow() });
+      let query = Object.assign({}, { "base": this.base, "ex": this.ex, "val": msg, "now": _tool2.default.getNow() });
       img.src = this.url + '?data=' + encodeURIComponent(JSON.stringify(query));
     } else {
       // todo: use post ajax
     }
+  }
+  getVersion() {
+    return this.version;
   }
 }
 
@@ -926,35 +938,46 @@ class Star_Arrow extends Arrow {
   }
 }
 
+exports.Arrow = Arrow;
 exports.Action_Arrow = Action_Arrow;
 exports.Star_Arrow = Star_Arrow;
-},{"../common/tool":5,"intersection-observer":7}],1:[function(require,module,exports) {
+},{"../common/tool":6,"intersection-observer":7}],1:[function(require,module,exports) {
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _arrow = require("./src/arrow");
 
-var arrow = _interopRequireWildcard(_arrow);
+var arrows = _interopRequireWildcard(_arrow);
+
+var _tool = require("./src/common/tool");
+
+var tools = _interopRequireWildcard(_tool);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 const aw = {
-  init(config) {
-    if (config.type === 'aciton-arrow') {
-      return new arrow.Action_Arrow(config.config);
-    } else if (config.type === 'star-arrow') {
-      return new arrow.Star_Arrow(config.config);
-    }
+  config: {},
+  init(config = {}) {
+    this.config = config;
+  },
+  getVersion() {
+    return new arrows.Arrow().getVersion();
+  },
+  starArrow() {
+    return new arrows.Star_Arrow(this.config);
+  },
+  actionArrow() {
+    return new arrows.Action_Arrow(this.config);
   }
 };
 
 window.AW = aw;
 
-// if (!window.AW) {
-
-// } else {
-//     console.error('window.AW is has!')
-// }
-},{"./src/arrow":3}],0:[function(require,module,exports) {
+exports.default = AW = aw;
+},{"./src/arrow":5,"./src/common/tool":6}],0:[function(require,module,exports) {
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
 function Module() {
@@ -972,7 +995,7 @@ function Module() {
 module.bundle.Module = Module;
 
 if (!module.bundle.parent) {
-  var ws = new WebSocket('ws://localhost:61973/');
+  var ws = new WebSocket('ws://localhost:60522/');
   ws.onmessage = function(event) {
     var data = JSON.parse(event.data);
 

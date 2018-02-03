@@ -1,19 +1,22 @@
-import * as arrow from './src/arrow'
+import * as arrows from './src/arrow';
+import * as tools from './src/common/tool'
 
 const aw = {
-    init (config) {
-        if (config.type === 'aciton-arrow') {
-            return new arrow.Action_Arrow(config.config)
-        } else if (config.type === 'star-arrow') {
-            return new arrow.Star_Arrow(config.config)
-        }
+    config: {},
+    init (config = {}) {
+        this.config = config;
+    },
+    getVersion () {
+        return (new arrows.Arrow).getVersion();
+    },
+    starArrow() {
+        return new arrows.Star_Arrow(this.config);
+    },
+    actionArrow() {
+        return new arrows.Action_Arrow(this.config);
     }
 }
 
-window.AW = aw
+window.AW = aw;
 
-// if (!window.AW) {
-
-// } else {
-//     console.error('window.AW is has!')
-// }
+export default AW = aw;

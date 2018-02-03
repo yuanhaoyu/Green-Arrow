@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="../dist/index.js"></script>
+    <script src="../dist/green-arrow.js"></script>
     <style>
     .tt {
         width: 200px;
@@ -32,20 +32,31 @@
 <body>
     <a href="//www.baidu.com">1</a>
     <a href="#">2</a>
-    <div action-arrow="{'mid': 12312}" onClick="test()">12312312</div>
-    <div class="tt"></div>
+    <div action-arrow='{"mid": 12312}' onClick="test()">12312312</div>
+    <div class="tt" onClick="test2()"></div>
     <div class="tt2"></div>
     <div class="tt3" star-arrow='{"mid": "tt3"}'></div>
     <div class="tt4" star-arrow='{"mid": "tt4"}'></div>
 </body>
 <script>
-    let aaw = AW.init({type: 'aciton-arrow', config: {url: '//www.baidu.com'}});
-    let saw = AW.init({type: 'star-arrow', config: {url: '//www.baidu.com'}});
-    aaw.watcher();
-    saw.watcher();
-    // aaw.ok('test----123131')
-    function test() {
-        alert('test')
+    AW.init({
+        url: '//www.llamastudio.com', 
+        pid: 'testPid',
+        appnm: 'wechat',
+        channel: 'xd'
+    });
+    console.log(AW.getVersion());
+    var starArrow = AW.starArrow();    
+    var actionArrow = AW.actionArrow();
+    starArrow.watcher();
+    actionArrow.watcher();
+    starArrow.star('{"test":1}')
+    function test () {
+        alert(1)
+    }
+    function test2 () {
+        alert(2)
+        actionArrow.action('{"test":1}')
     }
 </script>
 </html>

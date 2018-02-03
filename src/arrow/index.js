@@ -2,19 +2,21 @@ import tools from '../common/tool';
 require('intersection-observer');
 
 class Arrow {
-    constructor (config) {
+    constructor (config = {}) {
         this.base = {
-            "src": config.src,
-            "pid": config.pid,
-            "channel": config.channel,
-            "sc": '',
-            "ua": '',
-            "startTime": '',
-            "endTime": ''
+            "appnm": config.appnm, // 处于哪个环境
+            "pid": config.pid, // 页面id
+            "channel": config.channel, // 上报渠道
+            "sc": '', // 屏幕大小
+            "ua": '', // 访问环境ua
+            "src": '', // 当前url   
+            "startTime": '', // 页面开始时间
+            "endTime": '' // 页面结束时间
         }
-        this.url = config.url;
-        this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET';
-        this.version = '0.0.0';
+        this.ex = config.ex;
+        this.url = config.url; // 打点信息将发往的url
+        this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET'; // 发送的方法
+        this.version = '0.0.0'; // 当前green-arrow的版本号
         this._init();
     }
     _init () {
@@ -26,11 +28,14 @@ class Arrow {
     _sendMsg (msg = {}) {
         if (this.type === 'GET') {
             let img = new Image();
-            let query = Object.assign({}, {"base": this.base ,"val": msg, "now": tools.getNow()})
+            let query = Object.assign({}, {"base": this.base ,"ex":this.ex, "val": msg, "now": tools.getNow()})
             img.src = this.url + '?data=' + encodeURIComponent(JSON.stringify(query));                      
         } else {
             // todo: use post ajax
         }
+    }
+    getVersion () {
+        return this.version;
     }
 }
 
@@ -97,12 +102,13 @@ class Star_Arrow extends Arrow{
     }
     star (msg) {
         let temp = Object.assign({}, {"type": "star"}, JSON.parse(msg));
-        console.log(temp);      
+        console.log(temp);  
         this._sendMsg(temp);        
     }
 }
 
 export {
+    Arrow,
     Action_Arrow,
     Star_Arrow
 }
