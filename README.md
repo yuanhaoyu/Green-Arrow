@@ -10,13 +10,14 @@ Green Arrow 是一款集打点，监控为一体的系统（当前版本beta 0.0
 ### Arrow 🏹️：
 
 目前提供两种Arrow作为打点标记：	
-#### action-arrow:
 
-action-arrow 为动作箭。在我们需要记录的动作的时候会触发的action-arrow    
+- action-arrow:
 
-#### star-arrow:
+	action-arrow 为动作箭。在我们需要记录的动作的时候会触发的action-arrow    
 
-star-arrow 为星箭，可以追踪页面元素的曝光情况
+- star-arrow:
+
+	star-arrow 为星箭，可以追踪页面元素的曝光情况
 
 
 
@@ -25,20 +26,20 @@ star-arrow 为星箭，可以追踪页面元素的曝光情况
 守望者目前提供2种类型，错误守望者和接口守望者
 ​	
 
-#### error-watcher：
+- error-watcher：
 
-目前error-watcher 有主动和被动2种方式
+	目前error-watcher 有主动和被动2种方式
 
 
-#### api-watcher:
+- api-watcher:
 
-目前api-watcher基于配置实现
+	目前api-watcher基于配置实现
 
 
 
 ## Quick Start
 
-😁首先是老生常谈的初始化，在**/dist/green-arrow.js**你可以获取到green-arrow。
+😁首先是老生常谈的初始化，在**/dist/index.js**你可以获取到green-arrow。
 
 你可以通过引入script标签的方式加载green-arrow，当时也可以通过npm，然后用es6的import引入。
 
@@ -68,7 +69,7 @@ var actionArrow = AW.actionArrow();
 
 AW会默认挂载到window上，当然你也可以用npm引入到方法，AW支持以下几种方法。
 
-#### init
+- init
 
 ```javascript
 AW.init({
@@ -76,8 +77,8 @@ AW.init({
         pid: 'testPid',
         appnm: 'wechat',
         channel: 'xd',
-  		type: 'get',
-  		ex: {}
+  		 type: 'get',
+  		 ex: {}
 });
 
 // 参数详解如下
@@ -89,7 +90,7 @@ AW.init({
 // ex: Object 额外的初始化参数，比如你可以通过app接入更多的参数来丰富你的base config
 ```
 
-#### getVersion
+- getVersion
 
 ```javascript
 AW.getVersion(); // 返回当前arrow的版本
@@ -106,7 +107,7 @@ starArrow 负责曝光/页面级别打点
 var starArrow = AW.starArrow()
 ```
 
-#### watcher()
+- watcher()
 
 开启曝光监听,当你在你的html标签中设置star-arrow属性的时候，watcher将自动监听 并在其曝光的时候进行打点。
 
@@ -116,7 +117,7 @@ var starArrow = AW.starArrow()
 starArrow.watcher()
 ```
 
-#### star(msg) 
+- star(msg) 
 
 手动进行曝光监听,其中参数msg 是个json字符串
 
@@ -134,7 +135,7 @@ actionArrow负责行为打点
 var actionArrow = AW.actionArrow();
 ```
 
-#### watcher
+- watcher
 
 开启动作监听,当你在你的html标签中设置action-arrow属性的时候，watcher将自动监听 并在其发生点击的时候进行打点。
 
@@ -144,7 +145,7 @@ var actionArrow = AW.actionArrow();
 actionArrow.watcher()
 ```
 
-#### action
+- action
 
 手动行为打点,其中参数msg 是个json字符串
 
@@ -156,11 +157,13 @@ actionArrow.watcher()
 
 ## Feature
 
--[ ] 支持对hash的单页面进行基础设置
--[ ] error-watch
--[ ] api-watch
+- [ ] 支持对hash的单页面进行基础设置
 
+- [ ] error-watch
 
--[ ] 可视化后台
--[ ] 自带后台支持
+- [ ] api-watch
+
+- [ ] 可视化后台
+
+- [ ] 自带后台支持
 
