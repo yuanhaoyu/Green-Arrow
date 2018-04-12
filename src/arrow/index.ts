@@ -1,31 +1,44 @@
 import tools from '../common/tool';
-require('intersection-observer');
+import 'intersection-observer';
 
-class Arrow {
-    constructor (config = {}) {
+
+interface Config {
+    appnm: string,
+    pid: string,
+    channel: string,
+    url: string,
+    type: string,
+    ex: object
+}
+
+abstract class Arrow {
+    base: object;
+    ex: object;
+    url: string;
+    type: string;
+    constructor (config: Config) {
         this.base = {
             "appnm": config.appnm, // 处于哪个环境
             "pid": config.pid, // 页面id
             "channel": config.channel, // 上报渠道
             "sc": '', // 屏幕大小
             "ua": '', // 访问环境ua
-            "src": '', // 当前url   
+            "src": '', // 当前url
             "startTime": '', // 页面开始时间
             "endTime": '' // 页面结束时间
         }
         this.ex = config.ex;
         this.url = config.url; // 打点信息将发往的url
         this.type = config.type && config.type.toUpperCase() === 'POST' ? config.type : 'GET'; // 发送的方法
-        this.version = '0.0.0'; // 当前green-arrow的版本号
-        this._init();
+        this.init();
     }
-    _init () {
+    private init () {
         // 初始化配置
-        this.base.sc = tools.getSC();
-        this.base.src = tools.getUrl();
-        this.base.ua = tools.getUA();
+        (this.base as any).sc = tools.getSC(),
+        (this.base as any).src = tools.getUrl();
+        (this.base as any).ua = tools.getUA();
     }
-    _sendMsg (msg = {}) {
+    protected sendMsg (msg = {}) {
         if (this.type === 'GET') {
             let img = new Image();
             let query = Object.assign({}, {"base": this.base ,"ex":this.ex, "val": msg, "now": tools.getNow()})
@@ -34,16 +47,14 @@ class Arrow {
             // todo: use post ajax
         }
     }
-    getVersion () {
-        return this.version;
-    }
 }
 
 class Action_Arrow extends Arrow{
-    constructor (config) {
+    constructor (config: Config) {
         super(config);
     }
-    watcher () {
+    // 当dom加载完成后使用，watch将监听所有含有action-arrow属性的元素
+    public watcher () {
         // todo: 去重
         setTimeout(() => {           
             let doms = document.querySelectorAll('[action-arrow]');
@@ -54,33 +65,35 @@ class Action_Arrow extends Arrow{
             }
         }, 0)
     }
-    action (msg) {
-        let temp = Object.assign({}, {"type": "action"}, JSON.parse(msg));
-        this._sendMsg(temp);
+    // 手动进行action打点, 注意msg必须是字符串
+    public action (msg) {
+        let temp = Object.assign({}, {"type": "ACTION"}, JSON.parse(msg));
+        this.sendMsg(temp);
     }
 }
 
 class Star_Arrow extends Arrow{
-    constructor (config) {
+    constructor (config: Config) {
         super(config);
-        this._start();
-        this._end();
+        this.start();
+        this.end();
     }
-    _start () {
-        this.base.startTime = tools.getNow();
-        this._sendMsg({"action": "in"});
+    private start () {
+        (this.base as any).startTime = tools.getNow();
+        this.sendMsg({"action": "in"});
     }
-    _end () {
+    // _end 存在兼容问题
+    private end () {
         let that = this;
         (function(win, t) {
             win.onbeforeunload = function(e){
-                t.base.startTime = tools.getNow();
-                t._sendMsg({"action": "out"});
+                (t.base as any).startTime = tools.getNow();
+                t.sendMsg({"action": "out"});
             };
         })(window, that);
     }
-
-    watcher () {
+    // 当dom加载完成后使用，watch将监听所有含有star-arrow属性的元素
+    public watcher () {
         // todo: add watcher
         const io = new IntersectionObserver(
             entries => {
@@ -100,10 +113,11 @@ class Star_Arrow extends Arrow{
             }
         }, 0)
     }
-    star (msg) {
-        let temp = Object.assign({}, {"type": "star"}, JSON.parse(msg));
+    // 手动进行曝光打点, 注意msg必须是字符串
+    public star (msg) {
+        let temp = Object.assign({}, {"type": "STAR"}, JSON.parse(msg));
         console.log(temp);  
-        this._sendMsg(temp);        
+        this.sendMsg(temp);        
     }
 }
 

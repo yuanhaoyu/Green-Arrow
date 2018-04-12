@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="../dist/index.js"></script>
+    <script src="../dist/green-arrow.js"></script>
+    <script src="./setpw.js"></script>
     <style>
     .tt {
         width: 200px;
@@ -39,15 +40,15 @@
     <div class="tt4" star-arrow='{"mid": "tt4"}'></div>
 </body>
 <script>
-    AW.init({
+    GAW.init({
         url: '//www.llamastudio.com', 
         pid: 'testPid',
         appnm: 'wechat',
         channel: 'xd'
     });
-    console.log(AW.getVersion());
-    var starArrow = AW.starArrow();    
-    var actionArrow = AW.actionArrow();
+    console.log(GAW.getVersion());
+    var starArrow = GAW.starArrow();    
+    var actionArrow = GAW.actionArrow();
     starArrow.watcher();
     actionArrow.watcher();
     starArrow.star('{"test":1}')
@@ -58,5 +59,9 @@
         alert(2)
         actionArrow.action('{"test":1}')
     }
+    // var pw = GAW.performanceWatch();
+    // var ew = GAW.errorWatch();
+    // ew.throwErr(`{name:test}`);
+    asd
 </script>
 </html>

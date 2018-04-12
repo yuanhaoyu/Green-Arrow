@@ -31,9 +31,9 @@ Green Arrow 是一款集打点，监控为一体的系统（当前版本beta 0.0
 	目前error-watcher 有主动和被动2种方式
 
 
-- api-watcher:
+- performance-watcher:
 
-	目前api-watcher基于配置实现
+	目前performance-watcher基于配置实现
 
 
 
@@ -159,9 +159,9 @@ actionArrow.watcher()
 
 - [ ] 支持对hash的单页面进行基础设置
 
-- [ ] error-watch
+- [ x ] error-watch
 
-- [ ] api-watch
+- [ x ] api-watch
 
 - [ ] 可视化后台
 

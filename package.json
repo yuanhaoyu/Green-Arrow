@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build ./src/index.ts -o dist/green-arrow.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,10 @@
   },
   "homepage": "https://github.com/yuanhaoyu/Green-Arrow#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "intersection-observer": "^0.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.8.1"
   }
 }
